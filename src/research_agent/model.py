@@ -50,13 +50,18 @@ class MockModel:
 
 
 class OllamaModel:
-    """Local model through Ollama's /api/chat."""
+    """Local model through Ollama's /api/chat.
+
+    If response_schema is given, Ollama constrains the output to that JSON schema.
+    The application still validates the result (structure is not the same as safety).
+    """
 
     def __init__(self, model: str, base_url: str = "http://localhost:11434",
                  temperature: float = 0.0, num_ctx: int = 4096,
-                 timeout_s: float = 300.0):
+                 timeout_s: float = 300.0, response_schema: dict | None = None):
         self.model = model
-        self.name = f"ollama:{model}"
+        self.response_schema = response_schema
+        self.name = f"ollama:{model}" + ("+schema" if response_schema else "")
         self.base_url = base_url.rstrip("/")
         self.temperature = temperature
         self.num_ctx = num_ctx
@@ -69,6 +74,8 @@ class OllamaModel:
             "stream": False,
             "options": {"temperature": self.temperature, "num_ctx": self.num_ctx},
         }
+        if self.response_schema:
+            payload["format"] = self.response_schema
         start = time.perf_counter()
         try:
             r = httpx.post(f"{self.base_url}/api/chat", json=payload,
@@ -97,8 +104,15 @@ def get_model() -> ModelClient:
     if provider == "mock":
         return MockModel()
     if provider == "ollama":
+        schema = None
+        if os.getenv("STRUCTURED_OUTPUT", "0") == "1":
+            from research_agent.schemas import decision_json_schema
+
+            schema = decision_json_schema()
         return OllamaModel(
             model=os.getenv("MODEL_NAME", "qwen2.5:3b"),
             base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+            response_schema=schema,
         )
     raise ValueError(f"Unknown MODEL_PROVIDER: {provider}")
+

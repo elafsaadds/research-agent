@@ -75,3 +75,36 @@ class ResearchPlan(BaseModel):
         if len(ids) != len(set(ids)):
             raise ValueError("sub-question ids must be unique")
         return self
+
+
+def decision_json_schema() -> dict:
+    """Schema for constrained output. Two variants make invalid mixes impossible."""
+    reason = {"type": "string"}
+    return {
+        "anyOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "action": {"type": "string", "enum": ["tool"]},
+                    "tool_name": {"type": "string"},
+                    "arguments": {"type": "object"},
+                    "reason_summary": reason,
+                },
+                "required": ["action", "tool_name", "arguments", "reason_summary"],
+                "additionalProperties": False,
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "action": {
+                        "type": "string",
+                        "enum": ["answer", "ask_user", "insufficient_evidence"],
+                    },
+                    "message": {"type": "string"},
+                    "reason_summary": reason,
+                },
+                "required": ["action", "message", "reason_summary"],
+                "additionalProperties": False,
+            },
+        ]
+    }

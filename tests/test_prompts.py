@@ -24,4 +24,5 @@ def test_messages_keep_system_and_user_separate():
     assert [x["role"] for x in m] == ["system", "user"]
     assert "What is X?" in m[1]["content"]
     assert "What is X?" not in m[0]["content"]
-    assert PROMPT_VERSION == "v1"
+    assert PROMPT_VERSION == "v2"
+

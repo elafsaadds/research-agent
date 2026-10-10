@@ -24,3 +24,25 @@ Make the model propose decisions in a typed format the application can validate 
 
 ## Limits
 - Only structure is checked. A well-formed decision may still be unsafe or wrong; stage 5 adds reference, policy and authority gates.
+
+## Results (single run each)
+| Setup | Valid at end | Valid first try | Attempts |
+|---|---|---|---|
+| prompt only (v1) | 6/8 | 2/8 | 16 |
+| + Ollama schema, optional fields | 6/8 | 3/8 | 15 |
+| + Ollama schema, two variants (tool / non-tool) | 8/8 | 8/8 | 8 |
+
+Small differences are within run-to-run noise (stage 2: only 1/8 identical answers across two runs).
+Cause of the v1 schema failures: the model filled tool_name/arguments while action was not "tool". Constrained output with optional fields cannot express this conditional rule; splitting the schema into two variants makes the invalid mix unrepresentable. AgentDecision validation remains as the second line of defence.
+
+## Key finding: structure is not judgement
+With the two-variant schema, only 3/8 first decisions were a search (Q3, Q4, Q8). Q1 and Q5 asked the user for clarification on clear questions; Q2, Q6, Q7 declared insufficient evidence before searching anything.
+
+## Prompt v2 experiment (single run)
+Rule added: first action must be a search; ask_user only if truly ambiguous; insufficient_evidence only after a search.
+Result: first action was a search in 4/8 (Q3, Q4, Q5, Q8) vs 3/8 with v1, within noise. The failure mode shifted from premature insufficient_evidence (Q2, Q6, Q7) to unnecessary ask_user (Q1, Q2, Q6, Q7).
+Conclusion: prompting alone does not enforce search-first on qwen2.5:3b. The rule must be enforced in code by the validation gate (stage 5). Prompt v2 is kept as the stable version.
+
+## Verification
+pytest: 26 passed.
+Result files: reports/stage3_parse_ollama_qwen2.5_3b+schema_*.jsonl
