@@ -31,7 +31,9 @@ Establish what a single prompt -> LLM -> answer system does, so the agent can be
 - Generic answers instead of domain-specific (Q3).
 - No conflict handling (Q4), no current knowledge (Q7).
 - Abstention is blind, not evidence-based (Q8).
-- Consistency between runs: (fill from comparison output)
+- Consistency between runs: only 1/8 answers were textually identical (Q8) despite temperature 0; local CPU inference is not fully deterministic. Latency varied 10-32 s per question. Semantic consistency (same meaning, different wording) still to be checked manually for Q5 and Q6.
 
 ## What this justifies
 Retrieval + evidence table (unsupported/wrong claims), conflict handling (Q4), INSUFFICIENT_EVIDENCE after real search (Q8), plan decomposition (multi-part Q3, Q5).
+
+
