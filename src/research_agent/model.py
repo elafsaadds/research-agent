@@ -1,56 +1,104 @@
+﻿"""Model boundary: the rest of the agent only sees ModelClient."""
+from __future__ import annotations
+
 import os
 import time
-import requests
+from dataclasses import dataclass
+from typing import Protocol
+
+import httpx
+from dotenv import load_dotenv
 
 
+class ModelError(RuntimeError):
+    """Raised when the model backend is unreachable or returns garbage."""
+
+
+@dataclass
 class ModelResponse:
-    def __init__(self, text, latency_s, completion_tokens):
-        self.text = text
-        self.latency_s = latency_s
-        self.completion_tokens = completion_tokens
+    text: str
+    model: str
+    latency_s: float
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+
+
+class ModelClient(Protocol):
+    name: str
+
+    def generate(self, messages: list[dict]) -> ModelResponse: ...
+
+
+class MockModel:
+    """Deterministic, free, offline. Used for development and unit tests."""
+
+    name = "mock"
+
+    def generate(self, messages: list[dict]) -> ModelResponse:
+        start = time.perf_counter()
+        last_user = next(
+            (m["content"] for m in reversed(messages) if m["role"] == "user"), ""
+        )
+        text = f"[MOCK] Answer to: {last_user[:80]}"
+        return ModelResponse(
+            text=text,
+            model="mock",
+            latency_s=time.perf_counter() - start,
+            prompt_tokens=sum(len(m["content"].split()) for m in messages),
+            completion_tokens=len(text.split()),
+        )
 
 
 class OllamaModel:
-    def __init__(self):
-        self.base_url = os.getenv(
-            "OLLAMA_BASE_URL",
-            "http://localhost:11434"
-        )
+    """Local model through Ollama's /api/chat."""
 
-        self.model = os.getenv(
-            "OLLAMA_MODEL",
-            "qwen2.5:1.5b"
-        )
+    def __init__(self, model: str, base_url: str = "http://localhost:11434",
+                 temperature: float = 0.0, num_ctx: int = 4096,
+                 timeout_s: float = 300.0):
+        self.model = model
+        self.name = f"ollama:{model}"
+        self.base_url = base_url.rstrip("/")
+        self.temperature = temperature
+        self.num_ctx = num_ctx
+        self.timeout_s = timeout_s
 
-    def generate(self, messages):
+    def generate(self, messages: list[dict]) -> ModelResponse:
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "stream": False,
+            "options": {"temperature": self.temperature, "num_ctx": self.num_ctx},
+        }
         start = time.perf_counter()
-
-        response = requests.post(
-            f"{self.base_url}/api/chat",
-            json={
-                "model": self.model,
-                "messages": messages,
-                "stream": False
-            },
-            timeout=120
-        )
-
-        response.raise_for_status()
-
-        data = response.json()
-
-        latency = time.perf_counter() - start
-
-        text = data["message"]["content"]
-
-        completion_tokens = data.get("eval_count", 0)
-
+        try:
+            r = httpx.post(f"{self.base_url}/api/chat", json=payload,
+                           timeout=self.timeout_s)
+            r.raise_for_status()
+            data = r.json()
+        except httpx.HTTPError as exc:
+            raise ModelError(f"Ollama request failed: {exc}") from exc
+        try:
+            text = data["message"]["content"]
+        except (KeyError, TypeError) as exc:
+            raise ModelError(f"Unexpected Ollama response: {data!r}") from exc
         return ModelResponse(
             text=text,
-            latency_s=latency,
-            completion_tokens=completion_tokens
+            model=self.model,
+            latency_s=time.perf_counter() - start,
+            prompt_tokens=data.get("prompt_eval_count"),
+            completion_tokens=data.get("eval_count"),
         )
 
 
-def get_model():
-    return OllamaModel()
+def get_model() -> ModelClient:
+    """Pick the backend from .env so the agent code never changes."""
+    load_dotenv()
+    provider = os.getenv("MODEL_PROVIDER", "mock").lower()
+    if provider == "mock":
+        return MockModel()
+    if provider == "ollama":
+        return OllamaModel(
+            model=os.getenv("MODEL_NAME", "qwen2.5:3b"),
+            base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+        )
+    raise ValueError(f"Unknown MODEL_PROVIDER: {provider}")
