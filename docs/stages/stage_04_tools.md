@@ -23,12 +23,18 @@ Declared in the prompt but not registered yet: fetch_page, save_report. execute(
 - Starter corpus: 7 project-authored study notes (including two opposing positions on guardrails: doc-004, doc-005). They are NOT published sources. TODO before final report: add real downloaded sources, target 15-30 documents.
 
 ## Results (fill in)
-- pytest: __ passed
-- Mean recall@3 on labelled questions Q1-Q6: __ (smoke test only: documents and labels written by the same author)
-- Q7/Q8 corpus top scores: __
-- Live arXiv "prompt injection agents": ok=__, hits=__, latency=__ s
-- Live arXiv for the fictional Q8 title: __
+## Results
 
+- **pytest:** 48 passed in 1.51s.
+- **Mean recall@3:** 1.00 over Q1–Q6. This is an initial smoke test; corpus documents and labels were authored together.
+- **Q7:** no hits; no relevant document expected.
+- **Q8:** returned doc-001, doc-002, and doc-007; top BM25 score was 0.442. A non-zero score does not establish relevance.
+- **Live arXiv query — "prompt injection agents":** `ok=True`, 3 hits, no reported error, latency 0.89s in the first recorded run.
+- **Fictional Q8 title — "Quantum Trust Lattices for Agent Sandboxing":** `ok=True`, `error_type=None`, 0 hits in the direct verification run. The query completed without a reported tool error but returned no papers.
+
+## Evidence limitations
+
+The retrieval labels are a small, author-created smoke-test dataset, not an independent evaluation. The fictional-title test confirms zero returned hits for that query at the time of testing; it does not prove global non-existence of the title.
 ## Limits
 - BM25 is lexical: a non-zero score is not evidence of relevance.
 - BM25 gives zero scores on tiny corpora (fewer than 3 documents).
