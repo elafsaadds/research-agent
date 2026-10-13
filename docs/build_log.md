@@ -10,7 +10,7 @@ Topic: Agentic AI Security | Pattern: Perplexity-style Deep Research (Level 2)
 | 3 | Structured output + behaviour spec | stages/stage_03_structured_output.md | done |
 | 4 | Tools (corpus + arXiv) | stages/stage_04_tools.md | done |
 | 5 | Validation gates + bounded loop | stages/stage_05_gates_loop.md | done |
-| 6 | Tracing | | |
+| 6 | Tracing | stages/stage_06_tracing.md | done |
 | 7 | Plan, evidence table, conflicts | | |
 | 8 | Critic + re-plan (stretch) | | |
 | 9 | Security, evals, API/UI, Docker | | |
@@ -18,6 +18,7 @@ Topic: Agentic AI Security | Pattern: Perplexity-style Deep Research (Level 2)
 ## Decisions
 - Framework-neutral: pydantic + httpx.
 - Dev model: MockModel. Evaluation model: qwen2.5:3b (Ollama, CPU, 8 GB RAM).
+
 
 
 

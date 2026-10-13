@@ -1,0 +1,104 @@
+{
+  "run_id": "run_20261013_221610_0d45",
+  "started_at": "2026-10-13T22:16:10+00:00",
+  "ended_at": "2026-10-13T22:16:59+00:00",
+  "question": "What is the difference between direct and indirect prompt injection?",
+  "status": "COMPLETED",
+  "message": "Direct prompt injection involves the attacker directly inputting malicious instructions, while indirect prompt injection occurs when the malicious instruction is hidden in external content that the agent reads, such as a web page or document. [doc-001].",
+  "versions": {
+    "model": "ollama:qwen2.5:3b+schema",
+    "prompt": "v2+registered-tools",
+    "tools": "tools-v1",
+    "retrieval": "bm25:f372bdb0905f",
+    "code": "7481db8",
+    "code_dirty": false
+  },
+  "budget": {
+    "max_turns": 8,
+    "max_tool_calls": 12,
+    "run_timeout_s": 600.0,
+    "max_rejections": 3,
+    "max_context_chars": 12000,
+    "allowed_tiers": [
+      "read"
+    ]
+  },
+  "counters": {
+    "turns": 2,
+    "tool_calls": 1,
+    "searches_ok": 1,
+    "rejections": 0
+  },
+  "tokens": {
+    "prompt": 1085,
+    "completion": 125
+  },
+  "latency_s": 49.687,
+  "events": [
+    {
+      "t": 0.0,
+      "event": "run_start",
+      "question": "What is the difference between direct and indirect prompt injection?",
+      "model": "ollama:qwen2.5:3b+schema",
+      "max_turns": 8,
+      "max_tool_calls": 12
+    },
+    {
+      "t": 23.484,
+      "event": "proposal",
+      "turn": 1,
+      "action": "tool",
+      "tool": "search_corpus",
+      "arguments": {
+        "query": "direct prompt injection indirect prompt injection"
+      },
+      "attempts": 1,
+      "reason": "Need to find articles discussing the difference between direct and indirect prompt injection."
+    },
+    {
+      "t": 23.484,
+      "event": "validation",
+      "allowed": true,
+      "gate": "passed",
+      "reason": ""
+    },
+    {
+      "t": 23.5,
+      "event": "tool_result",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-001",
+        "doc-003",
+        "doc-005"
+      ],
+      "latency_s": 0.008
+    },
+    {
+      "t": 49.687,
+      "event": "proposal",
+      "turn": 2,
+      "action": "answer",
+      "tool": null,
+      "arguments": null,
+      "attempts": 1,
+      "reason": "Provides clear definitions for both types of prompt injection from [doc-001]."
+    },
+    {
+      "t": 49.687,
+      "event": "validation",
+      "allowed": true,
+      "gate": "passed",
+      "reason": ""
+    },
+    {
+      "t": 49.687,
+      "event": "final",
+      "status": "COMPLETED",
+      "turns": 2,
+      "tool_calls": 1,
+      "rejections": 0
+    }
+  ]
+}
