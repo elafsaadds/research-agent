@@ -1,4 +1,4 @@
-﻿import json
+import json
 
 import pytest
 
@@ -72,9 +72,10 @@ def test_happy_path(fake_tools):
 
 
 def test_insufficient_evidence_before_search_is_rejected_then_recovers(fake_tools):
-    res, _ = run([insufficient_reply(), tool_reply("q one"), insufficient_reply()])
+    res, _ = run([insufficient_reply(), tool_reply("q one"),
+                  arxiv_reply("q two"), insufficient_reply()])
     assert res.status == "INSUFFICIENT_EVIDENCE"
-    assert res.state.rejections == 1 and res.state.tool_calls == 1
+    assert res.state.rejections == 1 and res.state.tool_calls == 2
     rejected = [e for e in res.trace if e["event"] == "validation" and not e["allowed"]]
     assert rejected[0]["gate"] == "policy"
 
@@ -170,3 +171,25 @@ def test_prompt_lists_only_registered_tools(fake_tools):
     _, model = run([tool_reply("q one"), answer_reply("claim [doc-001]")])
     system = model.seen[0][0]["content"]
     assert "search_corpus" in system and "save_report" not in system
+
+
+def arxiv_reply(q):
+    return j(action="tool", tool_name="search_arxiv",
+             arguments={"query": q}, reason_summary="r")
+
+
+def test_gives_up_only_after_trying_every_source(fake_tools):
+    res, _ = run([arxiv_reply("q one"), insufficient_reply(),
+                  tool_reply("q two"), answer_reply("claim [doc-001]")])
+    assert res.status == "COMPLETED" and res.state.rejections == 1
+    assert res.state.tool_calls == 2
+
+
+def test_failed_source_counts_as_tried(monkeypatch):
+    def fake(name, arguments):
+        if name == "search_arxiv":
+            return ToolResult(tool=name, ok=False, error_type="timeout", error="slow")
+        return ToolResult(tool=name, ok=True, hits=[])
+    monkeypatch.setattr(agent, "execute", fake)
+    res, _ = run([tool_reply("q one"), arxiv_reply("q two"), insufficient_reply()])
+    assert res.status == "INSUFFICIENT_EVIDENCE" and res.state.rejections == 0

@@ -47,6 +47,7 @@ class RunState:
     consecutive_rejections: int = 0
     calls: set[str] = field(default_factory=set)
     known_sources: dict[str, SearchHit] = field(default_factory=dict)
+    tried_tools: set[str] = field(default_factory=set)
 
 
 @dataclass(frozen=True)
@@ -106,6 +107,13 @@ def validate_decision(d: AgentDecision, state: RunState, budget: Budget,
                            "this exact call was already made. Change the query or answer.")
         return GateResult(True)
 
+    if d.action == "insufficient_evidence" and state.searches_ok > 0:
+        untried = sorted(n for n in registry
+                         if n.startswith("search_") and n not in state.tried_tools)
+        if untried:
+            return _reject("policy",
+                           "insufficient_evidence is not allowed until every search source "
+                           "has been tried. Not yet tried: " + ", ".join(untried) + ".")
     if d.action in ("insufficient_evidence", "ask_user"):
         if state.searches_ok == 0:
             return _reject("policy",
@@ -120,7 +128,8 @@ def validate_decision(d: AgentDecision, state: RunState, budget: Budget,
         cited = list(dict.fromkeys(CITATION.findall(d.message or "")))
         if not cited:
             return _reject("policy",
-                           "the answer must cite retrieved sources as [source_id].")
+                           "the answer must cite retrieved sources as [source_id]. Retrieved ids: "
+                           + ", ".join(sorted(state.known_sources)) + ".")
         unknown = [c for c in cited if c not in state.known_sources]
         if unknown:
             return _reject("policy",
@@ -130,3 +139,4 @@ def validate_decision(d: AgentDecision, state: RunState, budget: Budget,
         return GateResult(True)
 
     return _reject("schema", f"unknown action {d.action!r}.")
+

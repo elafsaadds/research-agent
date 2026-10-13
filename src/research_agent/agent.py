@@ -106,6 +106,7 @@ def run_agent(question: str, model: ModelClient, budget: Budget | None = None,
 
         result = execute(d.tool_name, d.arguments)
         state.tool_calls += 1
+        state.tried_tools.add(d.tool_name)
         state.calls.add(call_key(d.tool_name, d.arguments))
         if result.ok:
             state.searches_ok += 1
@@ -118,3 +119,4 @@ def run_agent(question: str, model: ModelClient, budget: Budget | None = None,
         messages.append({"role": "user", "content": format_observation(result)})
 
     return finish(TerminalStatus.BUDGET_EXHAUSTED, "turn limit reached")
+

@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 
 from research_agent.policy import Budget, RunState, call_key, validate_decision
 from research_agent.schemas import AgentDecision
@@ -24,6 +24,7 @@ def hit(i="doc-001"):
 def with_evidence():
     s = RunState()
     s.searches_ok = 1
+    s.tried_tools = {"search_corpus", "search_arxiv"}
     s.known_sources["doc-001"] = hit()
     return s
 
@@ -117,3 +118,15 @@ def test_budget_from_env(monkeypatch):
     monkeypatch.setenv("RUN_TIMEOUT_SECONDS", "12.5")
     b = Budget.from_env()
     assert b.max_turns == 3 and b.run_timeout_s == 12.5
+
+
+def test_insufficient_evidence_needs_every_search_source_tried():
+    s = with_evidence()
+    s.tried_tools = {"search_corpus"}
+    r = validate_decision(other("insufficient_evidence", "nothing"), s, BUDGET)
+    assert not r.allowed and r.gate == "policy" and "search_arxiv" in r.reason
+
+
+def test_no_citation_feedback_lists_retrieved_ids():
+    r = validate_decision(other("answer", "no citation here"), with_evidence(), BUDGET)
+    assert not r.allowed and "doc-001" in r.reason
