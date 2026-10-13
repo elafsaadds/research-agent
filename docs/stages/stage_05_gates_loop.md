@@ -36,3 +36,20 @@ pytest: __ passed (gates, loop, budgets, failure modes, tool output labelled as 
 - First proposal was a search: __/8 (stage 3 without gates: 3-4/8)
 - Mean latency: __ s
 - Notes (BLOCKED cases, quality of answers, citation use): __
+
+## Results with qwen2.5:3b (2 questions, single run)
+| Q | Status | Turns | Tool calls | Rejections | First proposal a search | Latency |
+|---|---|---|---|---|---|---|
+| Q1 | COMPLETED | 2 | 1 | 0 | yes | 54.6 s |
+| Q2 | COMPLETED | 5 | 2 | 2 (policy) | no | 101.9 s |
+
+Rejections by gate: policy 2. First proposal was a search in 1/2. This sample is too small to compare with the stage 3 rates (3/8 and 4/8).
+COMPLETED means the answer passed the gate (its citations point to sources that were retrieved). It does not mean the answer is correct; correctness and claim-to-source support are reviewed manually and evaluated in stage 9.
+
+## Real failure case (documented for the report)
+First attempt at these two questions ended FAILED_SAFELY with turns=1 and zero tool calls. Cause: Ollama returned HTTP 500 because it could not allocate a 1.3 GB buffer while loading qwen2.5:3b (8 GB machine, low free RAM). The loop stopped in a named terminal state and the trace recorded the model error. After freeing memory (4.5 GB free before load) the same runs completed.
+Not retried automatically: a retry would not help when the cause is memory exhaustion.
+
+## Operational notes
+- On this CPU-only machine a turn takes about 10-40 s, so RUN_TIMEOUT_SECONDS must be raised from the default 60 (600 was used here).
+- Ollama unloads the model after 5 minutes by default; reloading needs free memory again.
