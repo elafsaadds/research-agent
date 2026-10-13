@@ -1,0 +1,84 @@
+﻿
+=== Q1 COMPLETED turns=2
+sources: doc-001, doc-003, doc-005
+final message: Direct prompt injection involves the attacker directly inputting malicious instructions, while indirect prompt injection occurs when the malicious instruction is hidden in external content that the agent reads, such as a web page or document. [doc-001].
+PROPOSE turn=1 tool search_corpus {"query":"direct prompt injection indirect prompt injection"}
+TOOL search_corpus ok=True error= hits=doc-001,doc-003,doc-005
+PROPOSE turn=2 answer  
+
+=== Q2 COMPLETED turns=3
+sources: arxiv:2504.11703v3, arxiv:2509.08646v1, arxiv:2607.22445v1
+final message: The principle of least privilege is applied to LLM agent tools by dynamically scoping capabilities to ensure that agents have only the minimum necessary permissions to perform their tasks, reducing the attack surface [arxiv:2607.22445v1].
+PROPOSE turn=1 ask_user  
+  -> REJECTED [policy] ask_user is not allowed before a successful search. Search first.
+PROPOSE turn=2 tool search_arxiv {"query":"principle of least privilege LLM agent tools"}
+TOOL search_arxiv ok=True error= hits=arxiv:2504.11703v3,arxiv:2509.08646v1,arxiv:2607.22445v1
+PROPOSE turn=3 answer  
+
+=== Q3 COMPLETED turns=2
+sources: doc-002, doc-003, doc-004
+final message: Layered defences against prompt injection include input and output filtering [doc-003], privilege separation [doc-002], and human approval for sensitive actions [doc-003]. Filter-based defences are also effective, reducing the volume of simple injection attempts [doc-004].
+PROPOSE turn=1 tool search_corpus {"query":"main defences prompt injection LLM agents"}
+TOOL search_corpus ok=True error= hits=doc-003,doc-004,doc-002
+PROPOSE turn=2 answer  
+
+=== Q4 COMPLETED turns=2
+sources: doc-002, doc-004, doc-005
+final message: Guardrails alone are not sufficient to prevent prompt injection, as adaptive attacks can find inputs that bypass them [doc-005]. However, proponents argue that filters and guardrails are an effective first layer, reducing the volume of simple injection attempts [doc-004]. The principle of least privilege is also recommended to limit an agent's authority [doc-002].
+PROPOSE turn=1 tool search_corpus {"query":"guardrails prompt injection agents"}
+TOOL search_corpus ok=True error= hits=doc-005,doc-004,doc-002
+PROPOSE turn=2 answer  
+
+=== Q5 INSUFFICIENT_EVIDENCE turns=4
+sources: doc-002, doc-006
+final message: Insufficient arXiv papers found for the query within the last 90 days.
+PROPOSE turn=1 tool search_corpus {"query":"memory poisoning LLM agents mitigation"}
+TOOL search_corpus ok=True error= hits=doc-006,doc-002
+PROPOSE turn=2 answer  
+  -> REJECTED [policy] the answer must cite retrieved sources as [source_id]. Retrieved ids: doc-002, doc-006.
+PROPOSE turn=3 tool search_arxiv {"query":"memory poisoning LLM agents mitigation latest 90 days"}
+TOOL search_arxiv ok=True error= hits=
+PROPOSE turn=4 insufficient_evidence  
+
+=== Q6 COMPLETED turns=5
+sources: doc-007
+final message: Excessive agency in LLM applications means having more functionality, permissions or autonomy than the task requires [doc-007]. This is dangerous as a single injection or model error can cause significant damage, such as altering records or sending data out [doc-007]. The remedy includes reducing the number of tools, narrowing permissions, and requiring human approval [doc-007].
+PROPOSE turn=1 ask_user  
+  -> REJECTED [policy] ask_user is not allowed before a successful search. Search first.
+PROPOSE turn=2 tool search_arxiv {"query":"excessive agency LLM applications dangers"}
+TOOL search_arxiv ok=True error= hits=
+PROPOSE turn=3 insufficient_evidence  
+  -> REJECTED [policy] insufficient_evidence is not allowed until every search source has been tried. Not yet tried: search_corpus.
+PROPOSE turn=4 tool search_corpus {"query":"excessive agency LLM applications dangers"}
+TOOL search_corpus ok=True error= hits=doc-007
+PROPOSE turn=5 answer  
+
+=== Q7 INSUFFICIENT_EVIDENCE turns=5
+sources: arxiv:2511.18114v1, arxiv:2512.18542v3, arxiv:2607.22611v1
+final message: Insufficient evidence found in the local document collection for the OWASP Top 10 for Agentic Applications released in 2025.
+PROPOSE turn=1 ask_user  
+  -> REJECTED [policy] ask_user is not allowed before a successful search. Search first.
+PROPOSE turn=2 tool search_arxiv {"query":"OWASP Top 10 Agentic Applications 2025"}
+TOOL search_arxiv ok=True error= hits=arxiv:2512.18542v3,arxiv:2511.18114v1,arxiv:2607.22611v1
+PROPOSE turn=3 answer  
+  -> REJECTED [policy] the answer must cite retrieved sources as [source_id]. Retrieved ids: arxiv:2511.18114v1, arxiv:2512.18542v3, arxiv:2607.22611v1.
+PROPOSE turn=4 tool search_corpus {"query":"OWASP Top 10 Agentic Applications 2025"}
+TOOL search_corpus ok=True error= hits=
+PROPOSE turn=5 insufficient_evidence  
+
+=== Q8 INSUFFICIENT_EVIDENCE turns=7
+sources: doc-001, doc-002, doc-007
+final message: Insufficient evidence found for the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing'.
+PROPOSE turn=1 tool search_arxiv {"query":"Quantum Trust Lattices for Agent Sandboxing 2026"}
+TOOL search_arxiv ok=True error= hits=
+PROPOSE turn=2 insufficient_evidence  
+  -> REJECTED [policy] insufficient_evidence is not allowed until every search source has been tried. Not yet tried: search_corpus.
+PROPOSE turn=3 tool search_corpus {"query":"Quantum Trust Lattices for Agent Sandboxing 2026"}
+TOOL search_corpus ok=True error= hits=doc-001,doc-002,doc-007
+PROPOSE turn=4 answer  
+  -> REJECTED [policy] the answer must cite retrieved sources as [source_id]. Retrieved ids: doc-001, doc-002, doc-007.
+PROPOSE turn=5 tool search_arxiv {"query":"Quantum Trust Lattices for Agent Sandboxing 2026"}
+  -> REJECTED [policy] this exact call was already made. Change the query or answer.
+PROPOSE turn=6 tool search_arxiv {"query":"Quantum Trust Lattices for Agent Sandboxing 2026,arXiv"}
+TOOL search_arxiv ok=True error= hits=
+PROPOSE turn=7 insufficient_evidence  
