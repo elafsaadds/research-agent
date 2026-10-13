@@ -53,3 +53,23 @@ Not retried automatically: a retry would not help when the cause is memory exhau
 ## Operational notes
 - On this CPU-only machine a turn takes about 10-40 s, so RUN_TIMEOUT_SECONDS must be raised from the default 60 (600 was used here).
 - Ollama unloads the model after 5 minutes by default; reloading needs free memory again.
+
+## Manual review of the full run (gates v1, single run)
+| Q | Verdict | Notes |
+|---|---|---|
+| Q1 | correct, supported | both expected points, matches doc-001 |
+| Q2 | partial, unverified | used arXiv this time (doc-002 not retrieved); describes papers, not the principle; claims about the papers cannot be checked from the trace (gate verifies ids only) |
+| Q3 | 3 of 4 points | missing "retrieved content is data"; "privilege separation" cited to doc-002 but the phrase is in doc-003 (loose citation) |
+| Q4 | good | both positions (doc-004, doc-005) cited correctly; one irrelevant sentence about doc-002 |
+| Q5 | FAILED the task | doc-006 retrieved, answer rejected (no citation), model switched to arXiv (0 hits) and gave up |
+| Q6 | FAILED the task | searched arXiv only (0 hits) and gave up; doc-007 was never retrieved |
+| Q7 | uncertain | 3 arXiv papers retrieved, answer rejected (no citation), then gave up; relevance of the papers unknown |
+| Q8 | acceptable abstention | 0 arXiv hits; message says no evidence found, does not claim the paper does not exist |
+
+## Findings
+1. insufficient_evidence is allowed after ANY successful search, even one with zero hits, and even if another source was never tried (Q6). A successful call with no results counts as a search.
+2. In Q5 and Q7 the "must cite" rejection did not list the retrievable ids, and the model abandoned its evidence instead of adding citations (2 cases: a hypothesis, not a result).
+3. Nothing in the code judges whether retrieved material answers the question (relevance); stage 7.
+4. Same question, different behaviour across runs: Q2 used the local corpus in the 2-question run and arXiv in the full run.
+5. doc-004 and doc-005 are complementary rather than contradictory (both treat filters as a useful but insufficient layer). A real conflict test needs real sources that disagree.
+6. Task-success view: the INSUFFICIENT_EVIDENCE outcomes on Q5 and Q6 count as task failures, not as safety wins, because the answer was available in the corpus.
