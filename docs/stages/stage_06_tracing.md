@@ -1,4 +1,4 @@
-﻿# Stage 6: Tracing
+# Stage 6: Tracing
 
 ## Purpose
 Make every run observable and comparable (guide sections 13 and 33). Target question: why did run R-1042 behave differently from run R-1039?
@@ -47,7 +47,7 @@ qwen2.5:3b + schema, 2 questions run twice (free RAM was 2.6-2.8 GB when they ra
 
 Counters were identical between the two runs of each question. Latency varied by up to 18 s for the same counters (Q1: 34.7 s vs 49.7 s), so latency reflects machine load, not code.
 
-compare of the two Q1 runs: version differences = __ ; counter differences = __ ; first divergence at proposal # = __
-Interpretation: __ (identical behaviour, or different behaviour with identical versions, which would indicate model non-determinism)
+compare of the two Q1 runs and of the two Q2 runs: version differences = none ; counter differences = none ; first divergence = none. Identical action sequences: Q1 = search_corpus then answer; Q2 = ask_user (rejected by the policy gate), search_arxiv, answer.
+Interpretation: in these two pairs the agent behaved identically at the level of actions and queries, with identical versions (model, prompt, tools, retrieval fingerprint bm25:f372bdb0905f, code 7481db8). Final message text identical: Q1 = True, Q2 = True. compare_runs compares actions, not final messages, so the message check was done separately; adding it to compare_runs is a possible improvement. Only 2 questions x 2 runs: this does not contradict stage 2 (1/8 identical baseline answers), which compared free text, whereas this compares decisions.
 
 Example traces in docs/examples: trace_example_failed_safely.json (mock, FAILED_SAFELY), trace_example_completed.json (Q1 completed), trace_example_rejection_recovery.json (Q2: a policy rejection followed by recovery).
