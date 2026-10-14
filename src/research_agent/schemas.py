@@ -1,4 +1,4 @@
-﻿"""Typed structures: what the model may propose, and how a run may end."""
+"""Typed structures: what the model may propose, and how a run may end."""
 from __future__ import annotations
 
 from enum import Enum
@@ -11,6 +11,7 @@ class TerminalStatus(str, Enum):
     """Every run must end in exactly one of these."""
 
     COMPLETED = "COMPLETED"
+    PARTIAL = "PARTIAL"
     INSUFFICIENT_EVIDENCE = "INSUFFICIENT_EVIDENCE"
     WAITING_FOR_USER = "WAITING_FOR_USER"
     BLOCKED = "BLOCKED"
