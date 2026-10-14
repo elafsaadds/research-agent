@@ -58,3 +58,12 @@ The retrieval labels are a small, author-created smoke-test dataset, not an inde
 - BM25 is lexical and gives zero scores on tiny corpora (fewer than 3 documents).
 - arXiv gives abstracts only, not full text.
 - Live arXiv results change over time, so they are not frozen evidence.
+
+## Corpus v2 (added after stage 6)
+Three real sources were added (doc-008, doc-009, doc-010) after verifying titles, authors, dates and links by web search. The summaries are paraphrases of published abstracts and pages and must be checked against the originals before the report (figures especially).
+- doc-008: OWASP Top 10 for Agentic Applications for 2026 (published 9 December 2025). Confirms that the Q7 premise ("released in 2025") is correct. TODO: add the exact ASI01-ASI10 names from the official page.
+- doc-009 and doc-010: a real disagreement for Q4. MELON (ICML 2025) reports very low attack success rates for its defense; "The Attacker Moves Second" reports that adaptive attacks bypass 12 defenses at above 90 percent for most. A summary page says MELON was among those attacked; verify in the paper. MELON is a detection defense, not a plain input filter, so it relates to the guardrails question only indirectly.
+- evals/retrieval_labels.json updated: Q4 = doc-004, doc-005, doc-009, doc-010; Q7 = doc-008. Labels were written by the same author who wrote the summaries, so they test the mechanism, not retrieval quality.
+- Results of stages 3-6 came from corpus v1 (seven project-authored notes, fingerprint bm25:f372bdb0905f). Do not compare them with corpus v2 as if the data were the same.
+- doc-004 and doc-005 remain project-authored notes; replace with real sources.
+- Not yet sourced: memory poisoning (Q5), excessive agency (Q6), least privilege examples.
