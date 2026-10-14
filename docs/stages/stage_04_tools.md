@@ -67,3 +67,9 @@ Three real sources were added (doc-008, doc-009, doc-010) after verifying titles
 - Results of stages 3-6 came from corpus v1 (seven project-authored notes, fingerprint bm25:f372bdb0905f). Do not compare them with corpus v2 as if the data were the same.
 - doc-004 and doc-005 remain project-authored notes; replace with real sources.
 - Not yet sourced: memory poisoning (Q5), excessive agency (Q6), least privilege examples.
+
+## Corpus v2 retrieval check (stage4_demo, 10 documents)
+- pytest: 105 passed. Mean recall@3 = 0.93 over 7 labelled questions (previously 1.00 over 6 on corpus v1). Not comparable: the corpus and the label set both changed.
+- Q4: recall 0.50. doc-005 and doc-010 were retrieved; doc-004 and doc-009 were missing and unrelated doc-001 ranked third. Cause not verified. Hypothesis: the tokenizer does not normalise word forms, so "injections" in doc-009 does not match "injection" in the query.
+- Q8 (fictional paper): the top corpus score rose from 0.442 to 3.83 and the top hits are doc-008, doc-010 and doc-001, none relevant. Hypothesis: overlap on generic tokens such as "2026" and "agent". Either way, a high BM25 score is not evidence of relevance, so the relevance and sufficiency judgement of stage 7 is needed.
+- Q1, Q3, Q5, Q6: labelled documents retrieved, but the longer real documents (doc-008, doc-010) now appear as low-relevance filler in the lower ranks.
