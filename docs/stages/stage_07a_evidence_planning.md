@@ -1,4 +1,4 @@
-﻿# Stage 7a: Plan, evidence table, conflicts, deterministic report
+# Stage 7a: Plan, evidence table, conflicts, deterministic report
 
 ## Purpose
 Move correctness out of the 3b model and into code (guide sections 17-19, 21, 44): the model proposes, code verifies and assembles. Stage 5 showed that a loop where the model picks tools fails on relevance and sufficiency (Q5, Q8).
@@ -23,7 +23,7 @@ Move correctness out of the 3b model and into code (guide sections 17-19, 21, 44
 - Stance labels come from the model; conflict detection is only as good as those labels.
 
 ## Tests
-pytest: __ passed (cumulative). New: test_evidence.py, test_planning.py, test_retrieval.py.
+pytest: 145 passed (cumulative, stages 0-7a). New: test_evidence.py, test_planning.py, test_retrieval.py.
 
 ## Next: stage 7b
 Orchestrator that calls the model (plan, extraction, re-plan wording), runs both sources per sub-question through execute, integrates tracing, and evaluates on the 8 frozen questions against the stage 5 loop and the baseline.

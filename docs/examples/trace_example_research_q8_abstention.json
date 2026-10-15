@@ -1,0 +1,248 @@
+{
+  "run_id": "run_20261015_075936_b515",
+  "started_at": "2026-10-15T07:59:36+00:00",
+  "ended_at": "2026-10-15T08:01:47+00:00",
+  "question": "What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?",
+  "status": "INSUFFICIENT_EVIDENCE",
+  "message": "Question: What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?\n\n## s1. What were the main findings in the 2026 paper 'Quantum Trust Lattices for Agent Sandboxing'?\nNo verified evidence was found for this sub-question.\n\nCoverage: 0/1 sub-questions have verified evidence.\n\n## Evidence table\n| sub-question | source | stance | quote |\n|---|---|---|---|\n## Search log\n- s1 search_corpus: ok, 3 hits (doc-010, doc-008, doc-001)\n- s1 search_arxiv: ok, 1 hits (arxiv:quant-ph/0202143v1)\n- s1 search_corpus: ok, 3 hits (doc-008, doc-010, doc-001)\n- s1 search_arxiv: ok, 2 hits (arxiv:2508.17296v2, arxiv:2507.17655v2)\n- s1 search_corpus: ok, 3 hits (doc-008, doc-010, doc-001)\n- s1 search_arxiv: ok, 0 hits (none)",
+  "versions": {
+    "model": "ollama:qwen2.5:3b",
+    "prompt": "research-v1",
+    "tools": "tools-v1",
+    "retrieval": "bm25:c8f986921ad8",
+    "code": "a292413",
+    "code_dirty": true
+  },
+  "budget": {
+    "max_turns": 14,
+    "max_tool_calls": 12,
+    "run_timeout_s": 1500.0,
+    "max_rejections": 3,
+    "max_context_chars": 12000,
+    "allowed_tiers": [
+      "read"
+    ]
+  },
+  "counters": {
+    "turns": 6,
+    "tool_calls": 6,
+    "searches_ok": 6,
+    "rejections": 0
+  },
+  "tokens": {
+    "prompt": 2992,
+    "completion": 156
+  },
+  "latency_s": 131.157,
+  "events": [
+    {
+      "t": 0.0,
+      "event": "run_start",
+      "question": "What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?",
+      "model": "ollama:qwen2.5:3b",
+      "max_model_calls": 14,
+      "max_tool_calls": 12,
+      "max_replans": 2
+    },
+    {
+      "t": 12.75,
+      "event": "model_call",
+      "step": "plan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 12.75
+    },
+    {
+      "t": 12.75,
+      "event": "plan",
+      "valid": true,
+      "fallback": false,
+      "reason": null,
+      "sub_questions": [
+        {
+          "id": "s1",
+          "question": "What is the main concept discussed in the paper 'Quantum Trust Lattices for Agent Sandboxing'?"
+        }
+      ]
+    },
+    {
+      "t": 12.75,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-010",
+        "doc-008",
+        "doc-001"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 13.375,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "arxiv:quant-ph/0202143v1"
+      ],
+      "latency_s": 0.626
+    },
+    {
+      "t": 41.11,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 27.73
+    },
+    {
+      "t": 41.11,
+      "event": "findings",
+      "sub_question": "s1",
+      "accepted": [],
+      "rejected": [],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 51.141,
+      "event": "model_call",
+      "step": "replan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 10.03
+    },
+    {
+      "t": 51.141,
+      "event": "replan",
+      "sub_question": "s1",
+      "accepted": true,
+      "reason": null,
+      "question": "What were the key findings presented in the paper 'Quantum Trust Lattices for Agent Sandboxing' in 2026?"
+    },
+    {
+      "t": 51.141,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-008",
+        "doc-010",
+        "doc-001"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 53.547,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "arxiv:2508.17296v2",
+        "arxiv:2507.17655v2"
+      ],
+      "latency_s": 2.415
+    },
+    {
+      "t": 89.5,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 35.94
+    },
+    {
+      "t": 89.5,
+      "event": "findings",
+      "sub_question": "s1",
+      "accepted": [],
+      "rejected": [],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 97.625,
+      "event": "model_call",
+      "step": "replan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 8.12
+    },
+    {
+      "t": 97.625,
+      "event": "replan",
+      "sub_question": "s1",
+      "accepted": true,
+      "reason": null,
+      "question": "What were the main findings in the 2026 paper 'Quantum Trust Lattices for Agent Sandboxing'?"
+    },
+    {
+      "t": 97.625,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-008",
+        "doc-010",
+        "doc-001"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 98.578,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [],
+      "latency_s": 0.958
+    },
+    {
+      "t": 131.157,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 32.57
+    },
+    {
+      "t": 131.157,
+      "event": "findings",
+      "sub_question": "s1",
+      "accepted": [],
+      "rejected": [],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 131.157,
+      "event": "conflicts",
+      "items": []
+    },
+    {
+      "t": 131.157,
+      "event": "report",
+      "unknown_citations": [],
+      "chars": 740
+    },
+    {
+      "t": 131.157,
+      "event": "final",
+      "status": "INSUFFICIENT_EVIDENCE",
+      "turns": 6,
+      "tool_calls": 6,
+      "rejections": 0
+    }
+  ]
+}

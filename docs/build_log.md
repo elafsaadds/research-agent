@@ -1,4 +1,4 @@
-﻿# Build Log: Deep Research Agent (COSC726)
+# Build Log: Deep Research Agent (COSC726)
 
 Topic: Agentic AI Security | Pattern: Perplexity-style Deep Research (Level 2)
 
@@ -11,7 +11,7 @@ Topic: Agentic AI Security | Pattern: Perplexity-style Deep Research (Level 2)
 | 4 | Tools (corpus + arXiv) | stages/stage_04_tools.md | done |
 | 5 | Validation gates + bounded loop | stages/stage_05_gates_loop.md | done |
 | 6 | Tracing | stages/stage_06_tracing.md | done |
-| 7 | Plan, evidence table, conflicts | | |
+| 7 | Plan, evidence table, conflicts, re-plan | stages/stage_07a_evidence_planning.md, stages/stage_07b_orchestrator.md | in progress (7a, 7b done) |
 | 8 | Critic + re-plan (stretch) | | |
 | 9 | Security, evals, API/UI, Docker | | |
 

@@ -1,0 +1,321 @@
+{
+  "run_id": "run_20261015_075435_f7ac",
+  "started_at": "2026-10-15T07:54:35+00:00",
+  "ended_at": "2026-10-15T07:59:36+00:00",
+  "question": "Can guardrails alone prevent prompt injection in agents?",
+  "status": "COMPLETED",
+  "message": "Question: Can guardrails alone prevent prompt injection in agents?\n\n## s1. What are the common types of prompt injection attacks in AI agents?\n- (supports) Direct prompt injection involves the attacker directly inputting malicious instructions. [doc-001]\n- (supports) Indirect prompt injection involves the instruction being hidden in external content that the agent reads. [doc-001]\n- (supports) MELON is a defense against indirect prompt injection in LLM agents. [doc-010]\n\n## s2. What role do guardrails play in safeguarding against prompt injection vulnerabilities in agent software?\n- (supports) No single control stops prompt injection, and layering defences is important. [doc-003]\n\n## s3. What are the limitations of using guardrails to prevent prompt injection attacks?\n- (supports) Guardrails alone cannot prevent prompt injection attacks. [doc-005]\n\nCoverage: 3/3 sub-questions have verified evidence.\n\n## Evidence table\n| sub-question | source | stance | quote |\n|---|---|---|---|\n| s1 | doc-001 | supports | \"Direct prompt injection happens when the attacker types the malicious instruction into the input the user controls.\" |\n| s1 | doc-001 | supports | \"Indirect prompt injection happens when the instruction is hidden in external content that the agent reads, such as a web page, a document or an email.\" |\n| s1 | doc-010 | supports | \"MELON is a defense against indirect prompt injection in LLM agents.\" |\n| s2 | doc-003 | supports | \"No single control stops prompt injection. Commonly combined defences are input and output filtering, privilege separation, human approval for sensitive actions, and treating retrieved content as data rather than instructions.\" |\n| s3 | doc-005 | supports | \"Critics argue that guardrails alone cannot prevent prompt injection. An adaptive attacker who can iterate on the wording can find inputs that a filter misses, and natural language has no fixed grammar that a filter can enumerate.\" |\n## Search log\n- s1 search_corpus: ok, 3 hits (doc-001, doc-010, doc-005)\n- s1 search_arxiv: ok, 0 hits (none)\n- s2 search_corpus: ok, 3 hits (doc-005, doc-010, doc-009)\n- s2 search_arxiv: ok, 1 hits (arxiv:2508.15310v1)\n- s2 search_corpus: ok, 3 hits (doc-002, doc-010, doc-003)\n- s2 search_arxiv: ok, 0 hits (none)\n- s3 search_corpus: ok, 3 hits (doc-005, doc-009, doc-010)\n- s3 search_arxiv: ok, 0 hits (none)",
+  "versions": {
+    "model": "ollama:qwen2.5:3b",
+    "prompt": "research-v1",
+    "tools": "tools-v1",
+    "retrieval": "bm25:c8f986921ad8",
+    "code": "a292413",
+    "code_dirty": true
+  },
+  "budget": {
+    "max_turns": 14,
+    "max_tool_calls": 12,
+    "run_timeout_s": 1500.0,
+    "max_rejections": 3,
+    "max_context_chars": 12000,
+    "allowed_tiers": [
+      "read"
+    ]
+  },
+  "counters": {
+    "turns": 6,
+    "tool_calls": 8,
+    "searches_ok": 8,
+    "rejections": 3
+  },
+  "tokens": {
+    "prompt": 2924,
+    "completion": 808
+  },
+  "latency_s": 301.062,
+  "events": [
+    {
+      "t": 0.0,
+      "event": "run_start",
+      "question": "Can guardrails alone prevent prompt injection in agents?",
+      "model": "ollama:qwen2.5:3b",
+      "max_model_calls": 14,
+      "max_tool_calls": 12,
+      "max_replans": 2
+    },
+    {
+      "t": 39.078,
+      "event": "model_call",
+      "step": "plan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 39.08
+    },
+    {
+      "t": 39.078,
+      "event": "plan",
+      "valid": true,
+      "fallback": false,
+      "reason": null,
+      "sub_questions": [
+        {
+          "id": "s1",
+          "question": "What are the common types of prompt injection attacks in AI agents?"
+        },
+        {
+          "id": "s2",
+          "question": "How do guardrails typically prevent prompt injection attacks?"
+        },
+        {
+          "id": "s3",
+          "question": "What are the limitations of using guardrails to prevent prompt injection attacks?"
+        }
+      ]
+    },
+    {
+      "t": 39.094,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-001",
+        "doc-010",
+        "doc-005"
+      ],
+      "latency_s": 0.012
+    },
+    {
+      "t": 39.75,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [],
+      "latency_s": 0.651
+    },
+    {
+      "t": 135.687,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 95.94
+    },
+    {
+      "t": 135.687,
+      "event": "findings",
+      "sub_question": "s1",
+      "accepted": [
+        {
+          "source_id": "doc-001",
+          "stance": "supports",
+          "quote": "Direct prompt injection happens when the attacker types the malicious instruction into the input the user controls."
+        },
+        {
+          "source_id": "doc-001",
+          "stance": "supports",
+          "quote": "Indirect prompt injection happens when the instruction is hidden in external content that the agent reads, such as a web page, a document or an email."
+        },
+        {
+          "source_id": "doc-010",
+          "stance": "supports",
+          "quote": "MELON is a defense against indirect prompt injection in LLM agents."
+        }
+      ],
+      "rejected": [
+        {
+          "source_id": "doc-010",
+          "reason": "evidence quote does not appear in the source text"
+        }
+      ],
+      "invalid": 0,
+      "answered": true
+    },
+    {
+      "t": 135.687,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-005",
+        "doc-010",
+        "doc-009"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 136.328,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "arxiv:2508.15310v1"
+      ],
+      "latency_s": 0.638
+    },
+    {
+      "t": 180.625,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 44.3
+    },
+    {
+      "t": 180.625,
+      "event": "findings",
+      "sub_question": "s2",
+      "accepted": [],
+      "rejected": [
+        {
+          "source_id": "doc-009",
+          "reason": "evidence quote does not appear in the source text"
+        }
+      ],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 189.781,
+      "event": "model_call",
+      "step": "replan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 9.15
+    },
+    {
+      "t": 189.781,
+      "event": "replan",
+      "sub_question": "s2",
+      "accepted": true,
+      "reason": null,
+      "question": "What role do guardrails play in safeguarding against prompt injection vulnerabilities in agent software?"
+    },
+    {
+      "t": 189.781,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-002",
+        "doc-010",
+        "doc-003"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 190.375,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [],
+      "latency_s": 0.592
+    },
+    {
+      "t": 236.531,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 46.15
+    },
+    {
+      "t": 236.531,
+      "event": "findings",
+      "sub_question": "s2",
+      "accepted": [
+        {
+          "source_id": "doc-003",
+          "stance": "supports",
+          "quote": "No single control stops prompt injection. Commonly combined defences are input and output filtering, privilege separation, human approval for sensitive actions, and treating retrieved content as data "
+        }
+      ],
+      "rejected": [],
+      "invalid": 0,
+      "answered": true
+    },
+    {
+      "t": 236.531,
+      "event": "search",
+      "sub_question": "s3",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-005",
+        "doc-009",
+        "doc-010"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 237.125,
+      "event": "search",
+      "sub_question": "s3",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [],
+      "latency_s": 0.599
+    },
+    {
+      "t": 301.062,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 63.94
+    },
+    {
+      "t": 301.062,
+      "event": "findings",
+      "sub_question": "s3",
+      "accepted": [
+        {
+          "source_id": "doc-005",
+          "stance": "supports",
+          "quote": "Critics argue that guardrails alone cannot prevent prompt injection. An adaptive attacker who can iterate on the wording can find inputs that a filter misses, and natural language has no fixed grammar"
+        }
+      ],
+      "rejected": [
+        {
+          "source_id": "doc-009",
+          "reason": "evidence quote does not appear in the source text"
+        }
+      ],
+      "invalid": 0,
+      "answered": true
+    },
+    {
+      "t": 301.062,
+      "event": "conflicts",
+      "items": []
+    },
+    {
+      "t": 301.062,
+      "event": "report",
+      "unknown_citations": [],
+      "chars": 2355
+    },
+    {
+      "t": 301.062,
+      "event": "final",
+      "status": "COMPLETED",
+      "turns": 6,
+      "tool_calls": 8,
+      "rejections": 3
+    }
+  ]
+}
