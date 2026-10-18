@@ -1,4 +1,4 @@
-﻿"""Stage 7b evidence: run the research orchestrator on the frozen questions.
+﻿"""Stage 7 evidence: run the research orchestrator on the frozen questions.
 
 Usage:
   python -m research_agent.stage7b_demo               all 8 frozen questions
@@ -32,18 +32,21 @@ def run_questions(ids: list[str], limit: int | None) -> None:
     questions = questions[:limit]
     OUT_DIR.mkdir(exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-    path = OUT_DIR / f"stage7b_research_{model.name.replace(':', '_')}_{stamp}.jsonl"
+    path = OUT_DIR / f"stage7_research_{model.name.replace(':', '_')}_{stamp}.jsonl"
 
     statuses: Counter = Counter()
+    original: Counter = Counter()
     total_latency = 0.0
     with path.open("w", encoding="utf-8") as out:
         for q in questions:
             record, res = traced_research(q["question"], model, budget, store)
             statuses[res.status] += 1
+            original[res.original_answered] += 1
             total_latency += res.latency_s
             out.write(json.dumps({
                 "id": q["id"], "category": q["category"], "run_id": record.run_id,
                 "status": res.status, "answered": res.answered, "total": res.total,
+                "original_answered": res.original_answered,
                 "sub_questions": [s.question for s in res.plan.sub_questions] if res.plan else [],
                 "conflicts": [{"sub_question": c.sub_question_id, "sources": c.source_ids}
                               for c in res.conflicts],
@@ -55,11 +58,13 @@ def run_questions(ids: list[str], limit: int | None) -> None:
                 "prompt_version": PROMPT_VERSION_RESEARCH, "report": res.message,
             }, ensure_ascii=False) + "\n")
             print(f"{q['id']} {record.run_id} {res.status} coverage={res.answered}/{res.total} "
-                  f"conflicts={len(res.conflicts)} replans={res.replans} "
-                  f"rejected_findings={res.findings_rejected} tools={res.state.tool_calls} "
-                  f"model_calls={res.model_calls} latency={res.latency_s}s")
+                  f"original_answered={res.original_answered} conflicts={len(res.conflicts)} "
+                  f"replans={res.replans} rejected_findings={res.findings_rejected} "
+                  f"tools={res.state.tool_calls} model_calls={res.model_calls} "
+                  f"latency={res.latency_s}s")
     n = max(len(questions), 1)
     print(f"\nStatuses: {dict(statuses)}")
+    print(f"Original question answered: {dict(original)}")
     print(f"Mean latency: {total_latency / n:.1f}s")
     print(f"Saved: {path}")
 

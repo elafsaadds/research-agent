@@ -158,3 +158,17 @@ def check_report_citations(text: str, table: EvidenceTable) -> list[str]:
     known = table.source_ids()
     cited = list(dict.fromkeys(CITATION.findall(text)))
     return [c for c in cited if c not in known]
+
+
+import re as _re
+
+_SENT_SPLIT = _re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'(])")
+MIN_SENTENCE_CHARS = 20
+
+
+def split_sentences(text: str) -> list[str]:
+    """Deterministic sentence split. The same function numbers the sources shown to the
+    model and copies the chosen sentence, so the two can never disagree."""
+    flat = " ".join(text.split())
+    parts = _SENT_SPLIT.split(flat)
+    return [p.strip() for p in parts if len(p.strip()) >= MIN_SENTENCE_CHARS]
