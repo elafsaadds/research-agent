@@ -1,0 +1,305 @@
+{
+  "run_id": "run_20261016_203345_7485",
+  "started_at": "2026-10-16T20:33:45+00:00",
+  "ended_at": "2026-10-16T20:36:30+00:00",
+  "question": "Can guardrails alone prevent prompt injection in agents?",
+  "status": "COMPLETED",
+  "message": "Question: Can guardrails alone prevent prompt injection in agents?\n\n## s1. Can guardrails alone prevent prompt injection in agents?\n- (supports) Guardrails alone cannot prevent prompt injection. [doc-005]\n- (supports) Detection-style defenses can reach very low attack success rates. [doc-010]\n\n## s2. What are the limitations of using guardrails to prevent prompt injection in AI agents?\n- (supports) Guardrails alone cannot prevent prompt injection. [doc-005]\n\n## s3. Can adversarial training alone be an effective countermeasure to prompt injection in AI agents?\n- (supports) Guardrails and similar defenses are not reliable on their own against adaptive attackers. [doc-009]\n\nCoverage: 3/3 sub-questions have verified evidence.\n\n## Evidence table\n| sub-question | source | stance | quote |\n|---|---|---|---|\n| s1 | doc-005 | supports | \"Critics argue that guardrails alone cannot prevent prompt injection.\" |\n| s1 | doc-010 | supports | \"Position: a detection-style defense can reach very low attack success rates in the authors' own evaluation.\" |\n| s2 | doc-005 | supports | \"Critics argue that guardrails alone cannot prevent prompt injection.\" |\n| s3 | doc-009 | supports | \"Their conclusion is that defense papers must face stronger adaptive attacks before claiming robustness.\" |\n\nOriginal question: verified evidence found.\n## Search log\n- s1 search_corpus: ok, 3 hits (doc-005, doc-010, doc-001)\n- s1 search_arxiv: ERROR http_error\n- s2 search_corpus: ok, 3 hits (doc-005, doc-002, doc-008)\n- s2 search_arxiv: ok, 0 hits (none)\n- s3 search_corpus: ok, 3 hits (doc-005, doc-004, doc-008)\n- s3 search_arxiv: ERROR timeout\n- s3 search_corpus: ok, 3 hits (doc-005, doc-008, doc-009)\n- s3 search_arxiv: ok, 0 hits (none)",
+  "versions": {
+    "model": "ollama:qwen2.5:3b",
+    "prompt": "research-v2",
+    "tools": "tools-v1",
+    "retrieval": "bm25:c8f986921ad8",
+    "code": "49c2570",
+    "code_dirty": true
+  },
+  "budget": {
+    "max_turns": 16,
+    "max_tool_calls": 12,
+    "run_timeout_s": 2400.0,
+    "max_rejections": 3,
+    "max_context_chars": 12000,
+    "allowed_tiers": [
+      "read"
+    ]
+  },
+  "counters": {
+    "turns": 6,
+    "tool_calls": 8,
+    "searches_ok": 6,
+    "rejections": 0
+  },
+  "tokens": {
+    "prompt": 2962,
+    "completion": 337
+  },
+  "latency_s": 164.875,
+  "events": [
+    {
+      "t": 0.0,
+      "event": "run_start",
+      "question": "Can guardrails alone prevent prompt injection in agents?",
+      "model": "ollama:qwen2.5:3b",
+      "max_model_calls": 16,
+      "max_tool_calls": 12,
+      "max_replans": 2
+    },
+    {
+      "t": 35.734,
+      "event": "model_call",
+      "step": "plan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 35.74
+    },
+    {
+      "t": 35.75,
+      "event": "plan",
+      "valid": true,
+      "fallback": false,
+      "reason": null,
+      "extras_dropped": 0,
+      "sub_questions": [
+        {
+          "id": "s1",
+          "question": "Can guardrails alone prevent prompt injection in agents?"
+        },
+        {
+          "id": "s2",
+          "question": "What are the limitations of using guardrails to prevent prompt injection in AI agents?"
+        },
+        {
+          "id": "s3",
+          "question": "Can adversarial training alone be an effective countermeasure to prompt injection in AI agents?"
+        }
+      ]
+    },
+    {
+      "t": 35.75,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-005",
+        "doc-010",
+        "doc-001"
+      ],
+      "latency_s": 0.009
+    },
+    {
+      "t": 36.234,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_arxiv",
+      "ok": false,
+      "error_type": "http_error",
+      "hits": [],
+      "latency_s": 0.486
+    },
+    {
+      "t": 74.015,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 37.78
+    },
+    {
+      "t": 74.015,
+      "event": "findings",
+      "sub_question": "s1",
+      "accepted": [
+        {
+          "source_id": "doc-005",
+          "stance": "supports",
+          "sentence": 1,
+          "quote": "Critics argue that guardrails alone cannot prevent prompt injection."
+        },
+        {
+          "source_id": "doc-010",
+          "stance": "supports",
+          "sentence": 6,
+          "quote": "Position: a detection-style defense can reach very low attack success rates in the authors' own evaluation."
+        }
+      ],
+      "rejected": [],
+      "invalid": 0,
+      "answered": true
+    },
+    {
+      "t": 74.015,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-005",
+        "doc-002",
+        "doc-008"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 82.843,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [],
+      "latency_s": 8.817
+    },
+    {
+      "t": 104.734,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 21.89
+    },
+    {
+      "t": 104.734,
+      "event": "findings",
+      "sub_question": "s2",
+      "accepted": [
+        {
+          "source_id": "doc-005",
+          "stance": "supports",
+          "sentence": 1,
+          "quote": "Critics argue that guardrails alone cannot prevent prompt injection."
+        }
+      ],
+      "rejected": [],
+      "invalid": 0,
+      "answered": true
+    },
+    {
+      "t": 104.734,
+      "event": "search",
+      "sub_question": "s3",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-005",
+        "doc-004",
+        "doc-008"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 114.937,
+      "event": "search",
+      "sub_question": "s3",
+      "tool": "search_arxiv",
+      "ok": false,
+      "error_type": "timeout",
+      "hits": [],
+      "latency_s": 10.214
+    },
+    {
+      "t": 130.812,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 15.87
+    },
+    {
+      "t": 130.812,
+      "event": "findings",
+      "sub_question": "s3",
+      "accepted": [],
+      "rejected": [],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 138.328,
+      "event": "model_call",
+      "step": "replan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 7.51
+    },
+    {
+      "t": 138.328,
+      "event": "replan",
+      "sub_question": "s3",
+      "accepted": true,
+      "reason": null,
+      "question": "Can adversarial training alone effectively counter prompt injection in AI agents?"
+    },
+    {
+      "t": 138.328,
+      "event": "search",
+      "sub_question": "s3",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-005",
+        "doc-008",
+        "doc-009"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 142.422,
+      "event": "search",
+      "sub_question": "s3",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [],
+      "latency_s": 4.098
+    },
+    {
+      "t": 164.875,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 22.44
+    },
+    {
+      "t": 164.875,
+      "event": "findings",
+      "sub_question": "s3",
+      "accepted": [
+        {
+          "source_id": "doc-009",
+          "stance": "supports",
+          "sentence": 4,
+          "quote": "Their conclusion is that defense papers must face stronger adaptive attacks before claiming robustness."
+        }
+      ],
+      "rejected": [],
+      "invalid": 0,
+      "answered": true
+    },
+    {
+      "t": 164.875,
+      "event": "conflicts",
+      "items": []
+    },
+    {
+      "t": 164.875,
+      "event": "report",
+      "unknown_citations": [],
+      "chars": 1727
+    },
+    {
+      "t": 164.875,
+      "event": "final",
+      "status": "COMPLETED",
+      "turns": 6,
+      "tool_calls": 8,
+      "rejections": 0,
+      "original_answered": true
+    }
+  ]
+}

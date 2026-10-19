@@ -1,0 +1,363 @@
+{
+  "run_id": "run_20261016_203630_ebd6",
+  "started_at": "2026-10-16T20:36:30+00:00",
+  "ended_at": "2026-10-16T20:38:59+00:00",
+  "question": "What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?",
+  "status": "INSUFFICIENT_EVIDENCE",
+  "message": "Question: What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?\n\n## s1. What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?\nNo verified evidence was found for this sub-question.\n\n## s2. What specific security improvements did the paper propose using quantum trust lattices for agent sandboxing?\nNo verified evidence was found for this sub-question.\n\n## s3. What limitations or challenges did the paper identify in implementing quantum trust lattices for agent sandboxing?\nNo verified evidence was found for this sub-question.\n\nCoverage: 0/3 sub-questions have verified evidence.\n\n## Evidence table\n| sub-question | source | stance | quote |\n|---|---|---|---|\n\nOriginal question: no verified evidence.\n## Search log\n- s1 search_corpus: ok, 3 hits (doc-008, doc-010, doc-001)\n- s1 search_arxiv: ok, 0 hits (none)\n- s1 search_corpus: ok, 3 hits (doc-008, doc-010, doc-001)\n- s1 search_arxiv: ok, 0 hits (none)\n- s2 search_corpus: ok, 3 hits (doc-008, doc-010, doc-009)\n- s2 search_arxiv: ok, 3 hits (arxiv:2109.11495v1, arxiv:2202.10673v1, arxiv:1004.2132v1)\n- s2 search_corpus: ok, 3 hits (doc-008, doc-010, doc-001)\n- s2 search_arxiv: ok, 3 hits (arxiv:2412.17101v2, arxiv:2601.11095v1, arxiv:2308.10696v1)\n- s3 search_corpus: ok, 3 hits (doc-010, doc-008, doc-001)\n- s3 search_arxiv: ok, 3 hits (arxiv:1307.5893v3, arxiv:2305.07323v1, arxiv:2304.08678v2)",
+  "versions": {
+    "model": "ollama:qwen2.5:3b",
+    "prompt": "research-v2",
+    "tools": "tools-v1",
+    "retrieval": "bm25:c8f986921ad8",
+    "code": "49c2570",
+    "code_dirty": true
+  },
+  "budget": {
+    "max_turns": 16,
+    "max_tool_calls": 12,
+    "run_timeout_s": 2400.0,
+    "max_rejections": 3,
+    "max_context_chars": 12000,
+    "allowed_tiers": [
+      "read"
+    ]
+  },
+  "counters": {
+    "turns": 9,
+    "tool_calls": 10,
+    "searches_ok": 10,
+    "rejections": 0
+  },
+  "tokens": {
+    "prompt": 5732,
+    "completion": 241
+  },
+  "latency_s": 148.954,
+  "events": [
+    {
+      "t": 0.0,
+      "event": "run_start",
+      "question": "What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?",
+      "model": "ollama:qwen2.5:3b",
+      "max_model_calls": 16,
+      "max_tool_calls": 12,
+      "max_replans": 2
+    },
+    {
+      "t": 19.11,
+      "event": "model_call",
+      "step": "plan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 19.11
+    },
+    {
+      "t": 19.11,
+      "event": "plan",
+      "valid": true,
+      "fallback": false,
+      "reason": null,
+      "extras_dropped": 0,
+      "sub_questions": [
+        {
+          "id": "s1",
+          "question": "What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?"
+        },
+        {
+          "id": "s2",
+          "question": "What specific security improvements did the paper propose using quantum trust lattices for agent sandboxing?"
+        },
+        {
+          "id": "s3",
+          "question": "What limitations or challenges did the paper identify in implementing quantum trust lattices for agent sandboxing?"
+        }
+      ]
+    },
+    {
+      "t": 19.11,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-008",
+        "doc-010",
+        "doc-001"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 23.313,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [],
+      "latency_s": 4.198
+    },
+    {
+      "t": 43.204,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 19.88
+    },
+    {
+      "t": 43.204,
+      "event": "findings",
+      "sub_question": "s1",
+      "accepted": [],
+      "rejected": [],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 52.594,
+      "event": "model_call",
+      "step": "replan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 9.4
+    },
+    {
+      "t": 52.594,
+      "event": "replan",
+      "sub_question": "s1",
+      "accepted": true,
+      "reason": null,
+      "question": "What were the main findings of the 2026 paper with the title 'Quantum Trust Lattices for Agent Sandboxing'?"
+    },
+    {
+      "t": 52.61,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-008",
+        "doc-010",
+        "doc-001"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 53.313,
+      "event": "search",
+      "sub_question": "s1",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [],
+      "latency_s": 0.716
+    },
+    {
+      "t": 56.579,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 3.26
+    },
+    {
+      "t": 56.579,
+      "event": "findings",
+      "sub_question": "s1",
+      "accepted": [],
+      "rejected": [],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 65.032,
+      "event": "model_call",
+      "step": "replan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 8.45
+    },
+    {
+      "t": 65.032,
+      "event": "replan",
+      "sub_question": "s1",
+      "accepted": false,
+      "reason": "replacement repeats an earlier question for this sub-question",
+      "question": "What were the main findings of the 2026 paper with the title 'Quantum Trust Lattices for Agent Sandboxing'?"
+    },
+    {
+      "t": 65.032,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-008",
+        "doc-010",
+        "doc-009"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 65.704,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "arxiv:2109.11495v1",
+        "arxiv:2202.10673v1",
+        "arxiv:1004.2132v1"
+      ],
+      "latency_s": 0.679
+    },
+    {
+      "t": 97.36,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 31.65
+    },
+    {
+      "t": 97.36,
+      "event": "findings",
+      "sub_question": "s2",
+      "accepted": [],
+      "rejected": [],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 104.672,
+      "event": "model_call",
+      "step": "replan",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 7.31
+    },
+    {
+      "t": 104.672,
+      "event": "replan",
+      "sub_question": "s2",
+      "accepted": true,
+      "reason": null,
+      "question": "What specific security enhancements did the paper 'Quantum Trust Lattices for Agent Sandboxing' suggest?"
+    },
+    {
+      "t": 104.672,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-008",
+        "doc-010",
+        "doc-001"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 105.344,
+      "event": "search",
+      "sub_question": "s2",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "arxiv:2412.17101v2",
+        "arxiv:2601.11095v1",
+        "arxiv:2308.10696v1"
+      ],
+      "latency_s": 0.671
+    },
+    {
+      "t": 120.079,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 14.73
+    },
+    {
+      "t": 120.079,
+      "event": "findings",
+      "sub_question": "s2",
+      "accepted": [],
+      "rejected": [],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 120.079,
+      "event": "search",
+      "sub_question": "s3",
+      "tool": "search_corpus",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "doc-010",
+        "doc-008",
+        "doc-001"
+      ],
+      "latency_s": 0.001
+    },
+    {
+      "t": 121.313,
+      "event": "search",
+      "sub_question": "s3",
+      "tool": "search_arxiv",
+      "ok": true,
+      "error_type": null,
+      "hits": [
+        "arxiv:1307.5893v3",
+        "arxiv:2305.07323v1",
+        "arxiv:2304.08678v2"
+      ],
+      "latency_s": 1.242
+    },
+    {
+      "t": 148.954,
+      "event": "model_call",
+      "step": "extract",
+      "attempt": 1,
+      "parsed": true,
+      "latency_s": 27.63
+    },
+    {
+      "t": 148.954,
+      "event": "findings",
+      "sub_question": "s3",
+      "accepted": [],
+      "rejected": [],
+      "invalid": 0,
+      "answered": false
+    },
+    {
+      "t": 148.954,
+      "event": "conflicts",
+      "items": []
+    },
+    {
+      "t": 148.954,
+      "event": "report",
+      "unknown_citations": [],
+      "chars": 1422
+    },
+    {
+      "t": 148.954,
+      "event": "final",
+      "status": "INSUFFICIENT_EVIDENCE",
+      "turns": 9,
+      "tool_calls": 10,
+      "rejections": 0,
+      "original_answered": false
+    }
+  ]
+}
