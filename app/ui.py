@@ -1,24 +1,30 @@
-
 """Gradio web interface for the Research Agent."""
 
 import json
+from dataclasses import asdict
 from pathlib import Path
 import sys
+from typing import Any
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+
 import gradio as gr
-from api import run_research_request
+
+from app.api import run_research_request
 
 
-def as_dict(value):
+def as_dict(value: Any) -> dict:
+    """Return value as a dictionary when possible."""
     return value if isinstance(value, dict) else {}
 
 
-def show_json(value):
-    """Ensure JSON components always receive valid Python data."""
+def show_json(value: Any) -> Any:
+    """Convert project objects into data accepted by Gradio JSON components."""
     if value is None:
         return {}
 
@@ -35,96 +41,182 @@ def show_json(value):
         return show_json(value.model_dump(mode="json"))
 
     if hasattr(value, "__dataclass_fields__"):
-        from dataclasses import asdict
         return show_json(asdict(value))
 
     return {"value": str(value)}
 
 
-def research_callback(question):
-    """Run research and return report, plan, evidence, conflicts, diagnostics."""
-    try:
-        response = run_research_request(question)
-        result = as_dict(response.get("result"))
+def build_report(response: dict, result: dict) -> str:
+    """Build the main Markdown research report."""
+    report_text = response.get("message")
 
-        report_text = response.get("message")
-        if not report_text:
-            report_text = (
-                "The research run returned no separate final message. "
-                "Inspect the evidence and diagnostics tabs for details."
-            )
-
-        report = (
-            "# Research Report\n\n"
-            f"**Status:** {response.get('status', 'unknown')}  \n"
-            f"**Model:** {response.get('model', 'unknown')}  \n\n"
-            f"{report_text}"
+    if not report_text:
+        report_text = (
+            "The research run returned no separate final message. "
+            "Inspect the evidence and diagnostics tabs for details."
         )
 
-        plan = show_json(result.get("plan"))
-        evidence = show_json(result.get("table"))
-        conflicts = show_json(result.get("conflicts"))
+    return (
+        "# Research Report\n\n"
+        f"**Status:** {response.get('status', 'unknown')}  \n"
+        f"**Model:** {response.get('model', 'unknown')}  \n\n"
+        f"{report_text}"
+    )
 
-        diagnostics = show_json({
+
+def build_diagnostics(response: dict, result: dict) -> dict:
+    """Build structured run diagnostics for the UI."""
+    return show_json(
+        {
             "question": response.get("question"),
             "status": response.get("status"),
             "model": response.get("model"),
             "answered": result.get("answered"),
             "total_sub_questions": result.get("total"),
             "replans": result.get("replans"),
-            "original_question_answered": result.get("original_answered"),
+            "original_question_answered": result.get(
+                "original_answered"
+            ),
             "model_calls": result.get("model_calls"),
-            "findings_rejected": result.get("findings_rejected"),
+            "findings_rejected": result.get(
+                "findings_rejected"
+            ),
             "latency_s": result.get("latency_s"),
             "prompt_tokens": result.get("prompt_tokens"),
-            "completion_tokens": result.get("completion_tokens"),
+            "completion_tokens": result.get(
+                "completion_tokens"
+            ),
             "search_log": result.get("search_log", []),
-        })
+        }
+    )
 
-        return report, plan, evidence, conflicts, diagnostics
+
+def build_error_response(
+    title: str,
+    error_type: str,
+    error_message: str,
+) -> tuple[str, dict, dict, dict, dict]:
+    """Build a consistent error response for all UI outputs."""
+    error_report = (
+        f"# {title}\n\n"
+        f"**Error:** `{error_type}: {error_message}`\n\n"
+        "Check the PowerShell terminal for additional "
+        "diagnostic details. Never share your API key or `.env` file."
+    )
+
+    error_data = {
+        "error_type": error_type,
+        "error": error_message,
+    }
+
+    return (
+        error_report,
+        error_data,
+        error_data,
+        error_data,
+        error_data,
+    )
+
+
+def research_callback(
+    question: str,
+) -> tuple[str, Any, Any, Any, Any]:
+    """
+    Run the research pipeline and return:
+
+    1. Research report
+    2. Research plan
+    3. Evidence table
+    4. Detected conflicts
+    5. Run diagnostics
+    """
+    try:
+        response = run_research_request(question)
+        result = as_dict(response.get("result"))
+
+        report = build_report(response, result)
+        plan = show_json(result.get("plan"))
+        evidence = show_json(result.get("table"))
+        conflicts = show_json(result.get("conflicts"))
+        diagnostics = build_diagnostics(response, result)
+
+        return (
+            report,
+            plan,
+            evidence,
+            conflicts,
+            diagnostics,
+        )
+
+    except ValueError as exc:
+        return build_error_response(
+            title="Research request rejected",
+            error_type="ValidationError",
+            error_message=str(exc),
+        )
 
     except Exception as exc:
-        error_report = (
-            "# Research run failed\n\n"
-            f"**Error:** `{type(exc).__name__}: {exc}`\n\n"
-            "Check the PowerShell terminal for details. "
-            "Never share your API key or `.env` file."
+        return build_error_response(
+            title="Research run failed",
+            error_type=type(exc).__name__,
+            error_message=str(exc),
         )
-        error_data = {"error_type": type(exc).__name__, "error": str(exc)}
-        return error_report, error_data, error_data, error_data, error_data
 
 
 with gr.Blocks(title="Research Agent") as demo:
     gr.Markdown(
         """
-        # Research Agent
-        ### Evidence-grounded, multi-step research
+# Research Agent
 
-        Enter a research question to run the existing research pipeline.
-        Results appear below when the run finishes.
-        """
+### Evidence-grounded, multi-step research
+
+Enter a research question and run the existing
+evidence-grounded research pipeline.
+
+The interface exposes:
+
+- Research report
+- Research plan
+- Evidence table
+- Detected conflicts
+- Run diagnostics
+"""
     )
 
     question = gr.Textbox(
         label="Research question",
-        placeholder="What are the applications of AI in healthcare?",
+        placeholder=(
+            "What are the applications of AI in healthcare?"
+        ),
         lines=3,
     )
 
-    run_button = gr.Button("Start Research", variant="primary")
+    run_button = gr.Button(
+        "Start Research",
+        variant="primary",
+    )
+
     report_output = gr.Markdown()
 
     with gr.Tab("Research plan"):
-        plan_output = gr.JSON(label="Plan")
+        plan_output = gr.JSON(
+            label="Plan"
+        )
 
     with gr.Tab("Evidence"):
-        evidence_output = gr.JSON(label="Evidence table")
+        evidence_output = gr.JSON(
+            label="Evidence table"
+        )
 
     with gr.Tab("Conflicts"):
-        conflicts_output = gr.JSON(label="Detected conflicts")
+        conflicts_output = gr.JSON(
+            label="Detected conflicts"
+        )
 
     with gr.Tab("Run diagnostics"):
-        diagnostics_output = gr.JSON(label="Run information")
+        diagnostics_output = gr.JSON(
+            label="Run information"
+        )
 
     outputs = [
         report_output,
@@ -139,6 +231,7 @@ with gr.Blocks(title="Research Agent") as demo:
         inputs=question,
         outputs=outputs,
     )
+
     question.submit(
         fn=research_callback,
         inputs=question,

@@ -755,17 +755,17 @@ The Git history is intentionally maintained so that the evolution of the agent a
 ```text
 176 tests passed
 ```
-
 ## Not Yet Fully Integrated
 
 - Human approval as a mandatory transition inside the main research loop
 - Production deployment
-- API/UI layer
 - Docker deployment
 - Larger-scale benchmark evaluation
 - Extended security evaluation
+- Production-grade API hardening
+- Production-grade UI hardening
 
----
+
 
 # Limitations
 
@@ -844,3 +844,189 @@ Latest published Stage 8 commit:
 ```text
 f982945
 ```
+---
+
+# Development Progress
+
+| 8 | Human approval gate demonstration | Complete as standalone demonstration |
+| 9A | Research Agent API/UI and model integration | Complete |
+| 9B | Production hardening, security, evaluation and deployment | In progress |
+
+**Date:** 2026-10-19
+
+### Git Checkpoint
+
+The current implementation has been preserved in GitHub on:
+
+```text
+Branch: docs/stage9a-checkpoint
+Commit: cbf78fd
+
+### Stage 9A — Research Agent UI and Model Integration
+
+**Status:** Completed checkpoint
+
+**Date:** 2026-10-19
+
+Stage 9A introduced the first working user-facing interface for the research agent and completed the model-provider integration required by the research workflow.
+
+#### Implemented Components
+
+The following application components were added or completed:
+
+```text
+app/
+├── api.py
+└── ui.py
+```
+
+`app/api.py` provides the application-facing interface to the existing research pipeline.
+
+`app/ui.py` provides a Gradio-based web interface that allows a user to submit a research question and inspect the resulting research artifacts.
+
+The interface exposes:
+
+```text
+Research Report
+Research Plan
+Evidence Table
+Detected Conflicts
+Run Diagnostics
+```
+
+#### Model Integration
+
+The model boundary in:
+
+```text
+src/research_agent/model.py
+```
+
+supports multiple model providers through the same `ModelClient` abstraction.
+
+The implemented providers include:
+
+```text
+Mock
+Ollama
+Gemini
+```
+
+Structured output can be enabled through:
+
+```text
+STRUCTURED_OUTPUT=1
+```
+
+When structured output is enabled, the model receives the project's decision schema and returns structured JSON suitable for validation by the existing agent pipeline.
+
+When structured output is not enabled, the model boundary does not attach a decision schema.
+
+This behavior is covered by automated tests.
+
+#### Gemini Verification
+
+Gemini was successfully connected and tested through the model boundary.
+
+The verified configuration used:
+
+```text
+MODEL_PROVIDER=gemini
+MODEL_NAME=gemini-3.1-flash-lite
+STRUCTURED_OUTPUT=1
+```
+
+A direct model test successfully returned a structured response and confirmed connectivity.
+
+The research UI was subsequently tested using the Gemini model with structured output enabled.
+
+#### Research UI Verification
+
+The Gradio interface successfully executed a research question:
+
+```text
+What are the applications of AI in healthcare?
+```
+
+The resulting run demonstrated:
+
+```text
+Status: PARTIAL
+Model: gemini:gemini-3.1-flash-lite+schema
+Coverage: 2/3 sub-questions
+```
+
+
+
+Stage 9A focused on:
+
+1. User-facing research interface
+2. Application API boundary
+3. Gemini model integration
+4. Structured model output configuration
+5. UI-to-research-pipeline integration
+6. Research result visualization
+7. , evidence-grounded architecture.---
+
+---
+
+# Development Progress
+
+| Stage | Description | Status |
+|---|---|---|
+| 8 | Human approval gate demonstration | Complete as standalone demonstration |
+| 9A | Research Agent API/UI and model integration | Completed checkpoint |
+| 9B | UI observability, security, evaluation, and hardening | Planned |
+
+**Documentation review date:** 2026-10-19
+
+## Stage 9A — Research Agent UI and Model Integration
+
+**Status:** Completed checkpoint
+
+**Git branch:** `docs/stage9a-checkpoint`
+
+**Checkpoint commit:** `cbf78fd`
+
+### Implemented Components
+
+The application includes:
+
+- `app/api.py` — application-facing interface to the research pipeline.
+- `app/ui.py` — Gradio interface for submitting research questions and inspecting results.
+- `src/research_agent/model.py` — model-provider integration.
+
+The implemented model providers include Mock, Ollama, and Gemini.
+
+Structured output can be enabled with the `STRUCTURED_OUTPUT=1` environment setting.
+
+The interface exposes research artifacts including the report, research plan, evidence table, detected conflicts, and run diagnostics.
+
+### Research UI Verification
+
+A healthcare research question was tested through the interface:
+
+`What are the applications of AI in healthcare?`
+
+The recorded result was partial, with evidence coverage for two of three sub-questions. This demonstrates a partial research outcome in that run; it does not establish general performance or guarantee complete evidence coverage.
+
+### Automated Tests
+
+The previously reported test result was **176 passed**. The test suite must be run again to verify the current working tree before the next checkpoint.
+
+### Scope and Limitations
+
+Stage 9A established the application interface and connected it to the research workflow. It did not establish production readiness.
+
+## Stage 9B — Planned Work
+
+Stage 9B will be scoped after reviewing the current implementation and existing tests. Planned areas for investigation include:
+
+1. Review UI progress and status reporting.
+2. Improve visibility of sub-question execution and evidence coverage.
+3. Review error handling and diagnostic information.
+4. Add or improve API/UI tests where needed.
+5. Review security and configuration handling.
+6. Record verified results in the project documentation.
+
+A capability will only be marked complete after implementation and verification.
