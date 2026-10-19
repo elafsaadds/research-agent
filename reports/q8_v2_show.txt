@@ -1,0 +1,64 @@
+﻿run_20261016_203630_ebd6 status=INSUFFICIENT_EVIDENCE model=ollama:qwen2.5:3b prompt=research-v2 retrieval=bm25:c8f986921ad8 code=49c2570 dirty=True latency=148.954s
+counters={'turns': 9, 'tool_calls': 10, 'searches_ok': 10, 'rejections': 0} tokens={'prompt': 5732, 'completion': 241}
+[   0.00s] START    What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?
+[  19.11s] MODEL    plan attempt=1 parsed=True (19.11s)
+[  19.11s] PLAN     valid  extras_dropped=0 | s1=What did the 2026 paper titled 'Quantum Trust Latt; s2=What specific security improvements did the paper ; s3=What limitations or challenges did the paper ident
+[  19.11s] SEARCH   s1 search_corpus ok hits=['doc-008', 'doc-010', 'doc-001']
+[  23.31s] SEARCH   s1 search_arxiv ok hits=[]
+[  43.20s] MODEL    extract attempt=1 parsed=True (19.88s)
+[  43.20s] FINDINGS s1 accepted=[] rejected=[] invalid=0 answered=False 
+[  52.59s] MODEL    replan attempt=1 parsed=True (9.4s)
+[  52.59s] REPLAN   s1 accepted=True  -> What were the main findings of the 2026 paper with the title 'Quantum 
+[  52.61s] SEARCH   s1 search_corpus ok hits=['doc-008', 'doc-010', 'doc-001']
+[  53.31s] SEARCH   s1 search_arxiv ok hits=[]
+[  56.58s] MODEL    extract attempt=1 parsed=True (3.26s)
+[  56.58s] FINDINGS s1 accepted=[] rejected=[] invalid=0 answered=False 
+[  65.03s] MODEL    replan attempt=1 parsed=True (8.45s)
+[  65.03s] REPLAN   s1 accepted=False replacement repeats an earlier question for this sub-question -> What were the main findings of the 2026 paper with the title 'Quantum 
+[  65.03s] SEARCH   s2 search_corpus ok hits=['doc-008', 'doc-010', 'doc-009']
+[  65.70s] SEARCH   s2 search_arxiv ok hits=['arxiv:2109.11495v1', 'arxiv:2202.10673v1', 'arxiv:1004.2132v1']
+[  97.36s] MODEL    extract attempt=1 parsed=True (31.65s)
+[  97.36s] FINDINGS s2 accepted=[] rejected=[] invalid=0 answered=False 
+[ 104.67s] MODEL    replan attempt=1 parsed=True (7.31s)
+[ 104.67s] REPLAN   s2 accepted=True  -> What specific security enhancements did the paper 'Quantum Trust Latti
+[ 104.67s] SEARCH   s2 search_corpus ok hits=['doc-008', 'doc-010', 'doc-001']
+[ 105.34s] SEARCH   s2 search_arxiv ok hits=['arxiv:2412.17101v2', 'arxiv:2601.11095v1', 'arxiv:2308.10696v1']
+[ 120.08s] MODEL    extract attempt=1 parsed=True (14.73s)
+[ 120.08s] FINDINGS s2 accepted=[] rejected=[] invalid=0 answered=False 
+[ 120.08s] SEARCH   s3 search_corpus ok hits=['doc-010', 'doc-008', 'doc-001']
+[ 121.31s] SEARCH   s3 search_arxiv ok hits=['arxiv:1307.5893v3', 'arxiv:2305.07323v1', 'arxiv:2304.08678v2']
+[ 148.95s] MODEL    extract attempt=1 parsed=True (27.63s)
+[ 148.95s] FINDINGS s3 accepted=[] rejected=[] invalid=0 answered=False 
+[ 148.95s] CONFLICT []
+[ 148.95s] REPORT   chars=1422 unknown_citations=[]
+[ 148.95s] FINAL    INSUFFICIENT_EVIDENCE model_calls=9 tool_calls=10 rejected_findings=0 original_answered=False
+
+Question: What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?
+
+## s1. What did the 2026 paper titled 'Quantum Trust Lattices for Agent Sandboxing' conclude?
+No verified evidence was found for this sub-question.
+
+## s2. What specific security improvements did the paper propose using quantum trust lattices for agent sandboxing?
+No verified evidence was found for this sub-question.
+
+## s3. What limitations or challenges did the paper identify in implementing quantum trust lattices for agent sandboxing?
+No verified evidence was found for this sub-question.
+
+Coverage: 0/3 sub-questions have verified evidence.
+
+## Evidence table
+| sub-question | source | stance | quote |
+|---|---|---|---|
+
+Original question: no verified evidence.
+## Search log
+- s1 search_corpus: ok, 3 hits (doc-008, doc-010, doc-001)
+- s1 search_arxiv: ok, 0 hits (none)
+- s1 search_corpus: ok, 3 hits (doc-008, doc-010, doc-001)
+- s1 search_arxiv: ok, 0 hits (none)
+- s2 search_corpus: ok, 3 hits (doc-008, doc-010, doc-009)
+- s2 search_arxiv: ok, 3 hits (arxiv:2109.11495v1, arxiv:2202.10673v1, arxiv:1004.2132v1)
+- s2 search_corpus: ok, 3 hits (doc-008, doc-010, doc-001)
+- s2 search_arxiv: ok, 3 hits (arxiv:2412.17101v2, arxiv:2601.11095v1, arxiv:2308.10696v1)
+- s3 search_corpus: ok, 3 hits (doc-010, doc-008, doc-001)
+- s3 search_arxiv: ok, 3 hits (arxiv:1307.5893v3, arxiv:2305.07323v1, arxiv:2304.08678v2)
