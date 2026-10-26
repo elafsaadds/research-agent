@@ -1,13 +1,16 @@
+"""Human approval gate for a protected action.
 
-"""Human approval gate for a simulated protected action.
-
-This demonstration does not perform any external or destructive action.
+This module does not perform any external or destructive action.
+The protected action is only simulated, and only when a human
+decision of "approved" is supplied.
 """
 from dataclasses import dataclass
 from typing import Literal
 
 
 ApprovalDecision = Literal["approved", "rejected", "pending"]
+
+PROTECTED_ACTION = "simulate_publish_research_report"
 
 
 @dataclass(frozen=True)
@@ -22,12 +25,22 @@ def run_approval_demo(
     decision: ApprovalDecision = "pending",
 ) -> ApprovalResult:
     """Demonstrate that a protected action requires explicit approval."""
+    return request_approval(PROTECTED_ACTION, decision)
+
+
+def request_approval(
+    action: str,
+    decision: ApprovalDecision = "pending",
+) -> ApprovalResult:
+    """Gate a protected action behind an explicit human decision.
+
+    The action is executed only when the decision is "approved".
+    Any other value (including an unknown one) never executes.
+    """
     if decision not in {"approved", "rejected", "pending"}:
         raise ValueError(
             "decision must be approved, rejected, or pending"
         )
-
-    action = "simulate_publish_research_report"
 
     events = [
         {
