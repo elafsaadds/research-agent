@@ -1,9 +1,14 @@
-﻿"""Bounded agent loop: observe -> decide -> validate -> act -> observe."""
+"""Bounded agent loop: observe -> decide -> validate -> act -> observe."""
 from __future__ import annotations
 
 import time
 from dataclasses import dataclass
 
+from research_agent.approval import (
+    PROTECTED_ACTION,
+    ApprovalDecision,
+    request_approval,
+)
 from research_agent.model import ModelClient
 from research_agent.parsing import request_decision
 from research_agent.policy import Budget, RunState, call_key, validate_decision
@@ -37,7 +42,14 @@ def format_observation(r: ToolResult, max_snippet: int = 300) -> str:
 
 
 def run_agent(question: str, model: ModelClient, budget: Budget | None = None,
-              system_prompt: str | None = None) -> AgentResult:
+              system_prompt: str | None = None,
+              approval: ApprovalDecision | None = None) -> AgentResult:
+    """Run the bounded loop.
+
+    approval=None  : no protected action is requested (default behaviour).
+    approval=<...> : after a validated answer, publishing the report is a protected
+                     action that runs only if a human decision is "approved".
+    """
     budget = budget or Budget.from_env()
     state = RunState()
     trace: list[dict] = []
@@ -95,7 +107,13 @@ def run_agent(question: str, model: ModelClient, budget: Budget | None = None,
         state.consecutive_rejections = 0
 
         if d.action == "answer":
-            return finish(TerminalStatus.COMPLETED, d.message)
+            if approval is None:
+                return finish(TerminalStatus.COMPLETED, d.message)
+            # Protected action: runs only after an explicit human decision.
+            ap = request_approval(PROTECTED_ACTION, approval)
+            for e in ap.events:
+                event(e["event"], **{k: v for k, v in e.items() if k != "event"})
+            return finish(TerminalStatus(ap.status), d.message)
         if d.action == "insufficient_evidence":
             return finish(TerminalStatus.INSUFFICIENT_EVIDENCE, d.message)
         if d.action == "ask_user":
@@ -119,4 +137,3 @@ def run_agent(question: str, model: ModelClient, budget: Budget | None = None,
         messages.append({"role": "user", "content": format_observation(result)})
 
     return finish(TerminalStatus.BUDGET_EXHAUSTED, "turn limit reached")
-
