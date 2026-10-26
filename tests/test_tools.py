@@ -22,6 +22,148 @@ SAMPLE_ATOM = """<?xml version="1.0" encoding="UTF-8"?>
   </entry>
 </feed>"""
 
+SAMPLE_OPENALEX = {
+    "results": [
+        {
+            "id": "https://openalex.org/W9999999999",
+            "display_name": "A Test Study on Research Agents",
+            "doi": "https://doi.org/10.1234/example",
+            "abstract_inverted_index": {
+                "Research": [0],
+                "agents": [1],
+                "can": [2],
+                "support": [3],
+                "academic": [4],
+                "research": [5],
+            },
+        }
+    ]
+}
+def test_parse_openalex_json():
+    hits = tools.parse_openalex_json(
+        SAMPLE_OPENALEX,
+        3,
+    )
+
+    assert hits[0].source_id == "openalex:W9999999999"
+    assert hits[0].title == "A Test Study on Research Agents"
+    assert hits[0].url == "https://doi.org/10.1234/example"
+    assert hits[0].origin == "openalex"
+    assert "Research agents can support academic research" in hits[0].snippet
+
+def test_openalex_query_is_sanitised():
+    assert tools._openalex_query(
+        "  academic   research   agents  "
+    ) == "academic research agents"
+def test_openalex_query_is_sanitised():
+    assert tools._openalex_query(
+        "  academic   research   agents  "
+    ) == "academic research agents"
+def test_openalex_success(monkeypatch):
+    response = httpx.Response(
+        200,
+        json=SAMPLE_OPENALEX,
+        request=httpx.Request(
+            "GET",
+            "https://api.openalex.org/works",
+        ),
+    )
+
+    monkeypatch.setattr(
+        tools,
+        "_openalex_http_get",
+        lambda *a, **k: response,
+    )
+
+    r = execute(
+        "search_openalex",
+        {
+            "query": "academic research agents",
+        },
+    )
+
+    assert r.ok
+    assert r.hits[0].origin == "openalex"
+@pytest.mark.parametrize("exc,expected", [
+    (
+        httpx.TimeoutException("slow"),
+        "timeout",
+    ),
+    (
+        httpx.ConnectError("down"),
+        "network_error",
+    ),
+])
+def test_openalex_transport_errors_become_values(
+    monkeypatch,
+    exc,
+    expected,
+):
+    def boom(*a, **k):
+        raise exc
+
+    monkeypatch.setattr(
+        tools,
+        "_openalex_http_get",
+        boom,
+    )
+
+    r = execute(
+        "search_openalex",
+        {
+            "query": "academic research",
+        },
+    )
+
+    assert not r.ok
+    assert r.error_type == expected
+def test_openalex_http_error(monkeypatch):
+    response = httpx.Response(
+        503,
+        request=httpx.Request(
+            "GET",
+            "https://api.openalex.org/works",
+        ),
+    )
+
+    monkeypatch.setattr(
+        tools,
+        "_openalex_http_get",
+        lambda *a, **k: response,
+    )
+
+    result = execute(
+        "search_openalex",
+        {
+            "query": "academic research",
+        },
+    )
+
+    assert result.error_type == "http_error"
+def test_openalex_bad_json(monkeypatch):
+    response = httpx.Response(
+        200,
+        text="not json",
+        request=httpx.Request(
+            "GET",
+            "https://api.openalex.org/works",
+        ),
+    )
+
+    monkeypatch.setattr(
+        tools,
+        "_openalex_http_get",
+        lambda *a, **k: response,
+    )
+
+    result = execute(
+        "search_openalex",
+        {
+            "query": "academic research",
+        },
+    )
+
+    assert result.error_type == "bad_response"
 
 def _resp(status, text=""):
     return httpx.Response(status, text=text,
@@ -90,6 +232,16 @@ def test_invalid_arguments_rejected(args):
 def test_all_registered_tools_are_read_tier():
     assert all(s.tier == "read" for s in tools.REGISTRY.values())
 
+def test_openalex_host_allow_list():
+    with pytest.raises(tools.ToolFailure):
+        tools._openalex_http_get(
+            "https://evil.example.com/x",
+            {},
+            1.0,
+        )
+def test_openalex_is_registered_as_read_tool():
+    assert "search_openalex" in tools.REGISTRY
+    assert tools.REGISTRY["search_openalex"].tier == "read"
 
 def test_search_corpus_through_execute(monkeypatch, corpus):
     monkeypatch.setattr(tools, "get_corpus", lambda: corpus)
