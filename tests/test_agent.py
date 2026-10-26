@@ -359,8 +359,7 @@ def test_failed_source_counts_as_tried(monkeypatch):
     assert res.state.rejections == 0
 
 
-# Human Approval Gate tests.
-# These test the standalone simulation, not run_agent integration.
+# Human Approval Gate tests (standalone simulation).
 
 
 def test_human_approval_is_required_for_protected_action():
@@ -391,3 +390,56 @@ def test_human_approval_allows_simulated_action():
     assert result.status == "COMPLETED"
     assert result.executed is True
     assert result.events[-1]["event"] == "protected_action_simulated"
+
+
+# ---------------------------------------------------------------------
+# Human approval gate inside the main run_agent loop (Stage 9B)
+# ---------------------------------------------------------------------
+
+
+def run_with_approval(approval):
+    model = ScriptedModel([
+        tool_reply("indirect injection"),
+        answer_reply("It hides instructions [doc-001]."),
+    ])
+    return run_agent(
+        "What is indirect prompt injection?",
+        model,
+        Budget(),
+        approval=approval,
+    )
+
+
+def names(res):
+    return [e["event"] for e in res.trace]
+
+
+def test_approval_pending_waits_and_does_not_execute(fake_tools):
+    res = run_with_approval("pending")
+
+    assert res.status == "WAITING_FOR_APPROVAL"
+    assert "approval_requested" in names(res)
+    assert "approval_pending" in names(res)
+    assert "protected_action_simulated" not in names(res)
+
+
+def test_approval_rejected_is_blocked(fake_tools):
+    res = run_with_approval("rejected")
+
+    assert res.status == "BLOCKED"
+    assert "protected_action_blocked" in names(res)
+    assert "protected_action_simulated" not in names(res)
+
+
+def test_approval_approved_completes(fake_tools):
+    res = run_with_approval("approved")
+
+    assert res.status == "COMPLETED"
+    assert "protected_action_simulated" in names(res)
+
+
+def test_without_approval_behaviour_is_unchanged(fake_tools):
+    res = run_with_approval(None)
+
+    assert res.status == "COMPLETED"
+    assert "approval_requested" not in names(res)
