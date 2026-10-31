@@ -28,6 +28,30 @@ def show_json(value: Any) -> Any:
     if value is None:
         return {}
 
+    # Convert the custom EvidenceTable object explicitly.
+    if (
+        hasattr(value, "rows")
+        and hasattr(value, "rejected")
+        and value.__class__.__name__ == "EvidenceTable"
+    ):
+        return {
+            "rows": [
+                {
+                    "sub_question_id": row.sub_question_id,
+                    "finding": show_json(row.finding),
+                }
+                for row in value.rows
+            ],
+            "rejected": [
+                {
+                    "sub_question_id": item.sub_question_id,
+                    "finding": show_json(item.finding),
+                    "reason": item.reason,
+                }
+                for item in value.rejected
+            ],
+        }
+
     if isinstance(value, str):
         try:
             return json.loads(value)
